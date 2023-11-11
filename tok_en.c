@@ -2,12 +2,13 @@
 
 /**
  * Main - Entry point
- * count_token: To count amount of tokens available in a string
- * tmp: Store the main address to free it later
- * strtok: parse the string based on the seperator given
- * tokenize: tokenizes a string
- * malloc: allocate memory to store tokens
- * strdup; duplicates the string
+ * count_token: counts amount of tokens available in a string
+ * @address: Store the main address to free it later
+ * @seperator: parse the string based on the seperator given
+ * @**tokenize: tokenizes a string
+ *
+ * strdup: duplicates the string
+ * @*address: character to be addressed
  * Return: 0 when successful, -1 on error
  */
 
@@ -31,6 +32,11 @@ int count_token(char *address, char *seperator)
 	return (count);
 }
 
+/**
+ * **tokenize: character to be addressed
+ * @address: stores the main address to free it later
+ * Return: Return 0 when successful, -1 on error
+ */
 char **tokenize(char *address)
 {
 	int count = 0;
@@ -40,6 +46,7 @@ char **tokenize(char *address)
 	char *str, *token;
 	int a = 0;
 	char *dup;
+
 	tokens = NULL;
 		token = NULL;
 		if (address == NULL)
@@ -65,7 +72,7 @@ char **tokenize(char *address)
 		tokens[a++] = str;
 		token = strtok(NULL, seperator);
 		}
-	tokens[a]= NULL;
+	tokens[a] = NULL;
 	free(tmp);
-	return(tokens);
+	return (tokens);
 }

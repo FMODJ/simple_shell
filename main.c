@@ -1,4 +1,4 @@
-#include "shell.h"
+#include "shell.h" 
 
 int main(__attribute__((unused))int argc, __attribute__((unused))char **argv)
 {
@@ -7,7 +7,8 @@ int main(__attribute__((unused))int argc, __attribute__((unused))char **argv)
 	size_t size;
 	ssize_t read_value;
 	char **tokens;
-	int index = 0;
+	int index = 0
+		;
 	while (1)
 	{
 		address = NULL;
@@ -32,8 +33,7 @@ int main(__attribute__((unused))int argc, __attribute__((unused))char **argv)
 		{
 			printf("%s\n", tokens[index]);
 			index++;
-			
 		}
 	}
 	return (0);
- }
+}

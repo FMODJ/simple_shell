@@ -11,5 +11,5 @@
 
 int count_token(char *address, char *seperator);
 char **tokenize(char *address);
-
+int main(void);
 #endif

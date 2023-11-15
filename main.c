@@ -31,7 +31,7 @@ int main(__attribute__((unused))int argc, __attribute__((unused))char **argv)
 			continue;
 		while (tokens[index] != NULL)
 		{
-			printf("%s\n", tokens[index]);
+			write("%s\n", tokens[index]);
 			index++;
 		}
 	}

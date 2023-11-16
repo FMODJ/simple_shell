@@ -9,8 +9,8 @@
 #include <sys/stat.h>
 #define PRM "%"
 
+extern char **environ;
 int count_token(char *address, char *seperator);
 char **tokenize(char *address);
-extern char **environ
 
 #endif

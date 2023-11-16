@@ -11,5 +11,6 @@
 
 int count_token(char *address, char *seperator);
 char **tokenize(char *address);
+extern char **environ
 
 #endif

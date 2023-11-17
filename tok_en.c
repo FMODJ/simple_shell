@@ -1,78 +1,92 @@
 #include "shell.h"
 
 /**
- * Main - Entry point
- * count_token: counts amount of tokens available in a string
- * @address: Store the main address to free it later
- * @seperator: parse the string based on the seperator given
- * @**tokenize: tokenizes a string
- *
- * strdup: duplicates the string
- * @*address: character to be addressed
- * Return: 0 when successful, -1 on error
+ * @str: inputed string
+ * @d: delimeter string
+ * **strtow: divide string into words. repeatedly
+ * Return: a pointer to an array of strings, or NULL on failure
  */
-
-int count_token(char *address, char *seperator)
+char **strtow(char *str, char *d)
 {
-	int count = 0;
-	char *tokens;
-	char *tmp;
+	int i, j, k, m, numwords = 0;
+	char **s;
 
+	if (str == NULL || str[0] == 0)
+		return (NULL);
+	if (!d)
+		d = " ";
+	for (i = 0; str[i] != '\0'; i++)
+		if (!is_delim(str[i], d) && (is_delim(str[i + 1], d) || !str[i + 1]))
+			numwords++;
 
-	tmp = address;
-	if (address == NULL)
-		return (0);
-	tokens = strtok(address, seperator);
-	while (tokens)
+	if (numwords == 0)
+		return (NULL);
+	s = malloc((1 + numwords) * sizeof(char *));
+	if (!s)
+		return (NULL);
+	for (i = 0, j = 0; j < numwords; j++)
 	{
-		count++;
-		tokens = strtok(NULL, seperator);
-	}
-	free(tmp);
-	return (count);
-}
-
-/**
- * **tokenize: character to be addressed
- * @address: stores the main address to free it later
- * Return: Return 0 when successful, -1 on error
- */
-char **tokenize(char *address)
-{
-	int count = 0;
-	char *seperator = " \n\t";
-	char **tokens;
-	char *tmp;
-	char *str, *token;
-	int a = 0;
-	char *dup;
-
-	tokens = NULL;
-		token = NULL;
-		if (address == NULL)
+		while (is_delim(str[i], d))
+			i++;
+		k = 0;
+		while (!is_delim(str[i + k], d) && str[i + k])
+			k++;
+		s[j] = malloc((k + 1) * sizeof(char));
+		if (!s[j])
+		{
+			for (k = 0; k < j; k++)
+				free(s[k]);
+			free(s);
 			return (NULL);
-		dup = strdup(address);
-	count = count_token(dup, seperator);
-	if (count == 0)
-	{
-		free(address);
-		return (NULL);
-	}
-	tokens = malloc(sizeof(char *) * (count + 1));
-	if (tokens == NULL)
-	{
-		free(address);
-		return (NULL);
-	}
-	tmp = address;
-		token = strtok(address, seperator);
-	while (token != NULL)
-	{
-		str = strdup(token);
-		tokens[a++] = str;
-		token = strtok(NULL, seperator);
 		}
-	tokens[a] = NULL;
-	free(tmp);
-	return (tokens);
+		for (m = 0; m < k; m++)
+			s[j][m] = str[i++];
+		s[j][m] = 0;
+	}
+	s[j] = NULL;
+	return (s);
+}
+/**
+ * @d: delimeter
+ * @str: input string
+ * **strtow2 - divides string to two words
+ * Return: pointer to an array of strings, or NULL on failure
+ */
+char **strtow2(char *str, char d)
+{
+	int i, j, k, m, numwords = 0;
+	char **s;
+
+	if (str == NULL || str[0] == 0)
+		return (NULL);
+	for (i = 0; str[i] != '\0'; i++)
+		if ((str[i] != d && str[i + 1] == d) ||
+		    (str[i] != d && !str[i + 1]) || str[i + 1] == d)
+			numwords++;
+	if (numwords == 0)
+		return (NULL);
+	s = malloc((1 + numwords) * sizeof(char *));
+	if (!s)
+		return (NULL);
+	for (i = 0, j = 0; j < numwords; j++)
+	{
+		while (str[i] == d && str[i] != d)
+			i++;
+		k = 0;
+		while (str[i + k] != d && str[i + k] && str[i + k] != d)
+			k++;
+		s[j] = malloc((k + 1) * sizeof(char));
+		if (!s[j])
+		{
+			for (k = 0; k < j; k++)
+				free(s[k]);
+			free(s);
+			return (NULL);
+		}
+		for (m = 0; m < k; m++)
+			s[j][m] = str[i++];
+		s[j][m] = 0;
+	}
+	s[j] = NULL;
+	return (s);
 }

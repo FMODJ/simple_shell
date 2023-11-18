@@ -1,145 +1,44 @@
 #include "shell.h"
 
 /**
- * main - The main function
- * @argc: argument counter
- * @argv: the argument vector
- *@env: environment variable
- * Return: 0 on success, -1 if it fails
+ * main - entry point
+ * @ac: arg count
+ * @av: arg vector
+ *
+ * Return: 0 on success, 1 on error
  */
-
-int main(__attribute__((unused)) int argc, char **argv, char **env)
+int main(int ac, char **av)
 {
-	char *buffer;
-	char *new_buf;
-	size_t size;
-	ssize_t read_value;
-	char **tokens, *sep;
-	int index = 0;
+	info_t info[] = { INFO_INIT };
+	int fd = 2;
 
-	sep = "\n\t ";
-	environ = dynamic_env(env);
+	asm ("mov %1, %0\n\t"
+		"add $3, %0"
+		: "=r" (fd)
+		: "r" (fd));
 
-	do {
-		if (isatty(STDIN_FILENO))
-			prompt_user();
-
-		buffer = NULL;
-	tokens = NULL;
-	read_value = get_line(&buffer, &size, STDIN_FILENO);
-	if (read_value == 1)
+	if (ac == 2)
 	{
-		free(buffer);
-	continue;
-	}
-
-	if (read_value == -1)
-	{
-		free(buffer);
-		free_mem(environ);
-		exit(EXIT_SUCCESS);
-	}
-
-	new_buf = process_buf(buffer);
-	tokens = tokenize(new_buf, sep);
-
-	if (tokens == NULL)
-		continue;
-
-	process_command(tokens, env, &status, argv[0];
-			free_mem(tokens);
-	} while (TRUE);
-
-	free_mem(environ);
-	return (status);
-}
-
-/**
-*handle_sp_char - handles the character processes with special tokens
-*@tokens: the tokens to be evaluated
-*Return: the pointer to the special character
-*/
-
-char *handle_sp_char(char **tokens)
-{
-char *special_chars = ";||&&";
-	char *sp_char;
-
-	int f = 0;
-
-	do {
-		sp_char = strstr(special_chars, tokens[f]);
-		if (sp_char)
-			return (sp_char);
-		f++;
-	} while (tokens[f]);
-
-	return (NULL);
-}
-
-/**
-*process_command - processes command lines
-*@tokens: tokens
-*@env: environment
-*@status: the status code
-*@argv: arguments variables
-*Return: 0 at the end of the loop
-*/
-int process_command(char **tokens, char **env, int *status, char *argv)
-
-{
-char *sp_chars = ";||&&", *checked_char, **new_tk, **tk = tokens;
-int num = 0, f, prev;
-
-	checked_char = handle_sp_char(tokens);
-	if (!checked_char)
-		path_handler(tokens, env, status, argv);
-	else
-	{
-		for (num = 0; tk[num]; num++)
-	{
-		prev = num;
-		while (tk[num] && !strstr(sp_chars, tk[num]))
-		num++;
-
-	new_tk = malloc(sizeof(char *) * ((num - prev) + 1));
-	for (f = 0; f < (count - prev); f++)
-		new_tk[f] = strdup(tk[prev + f]);
-
-	new_tk[f] = NULL;
-	checked_char = tk[count];
-		path_handler(new_tk, env, status, argv);
-
-		if (checked_char != NULL)
+		fd = open(av[1], O_RDONLY);
+		if (fd == -1)
 		{
-			if (strcmp(checked_char, "||") == 0)
-		{
-			if (*status == 0)
-				return (flusher(new_tk));
+			if (errno == EACCES)
+				exit(126);
+			if (errno == ENOENT)
+			{
+				_eputs(av[0]);
+				_eputs(": 0: Can't open ");
+				_eputs(av[1]);
+				_eputchar('\n');
+				_eputchar(BUF_FLUSH);
+				exit(127);
+			}
+			return (EXIT_FAILURE);
 		}
-			else if (strcmp(checked_char, "&&") == 0)
-		{
-			if (*status != 0)
-			return (flusher(new_tk));
-		}
-		}
-	else
-		return (flusher(new_tk));
-
-	free_mem(new_tk);
+		info->readfd = fd;
 	}
-	}
-
-	return (0);
-}
-
-/**
-  *flusher - flushes memory
-  *@tokens: the tokens
-  *Return: 1 on success
-  */
-int flusher(char **tokens)
-{
-	free_mem(tokens);
-	return (1);
+	populate_env_list(info);
+	read_history(info);
+	hsh(info, av);
+	return (EXIT_SUCCESS);
 }

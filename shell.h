@@ -225,17 +225,17 @@ size_t print_list(const list_t *);
 list_t *node_starts_with(list_t *, char *, char);
 ssize_t get_node_index(list_t *, list_t *);
 
-<<<<<<< HEAD
+
 extern char **environ;
 int count_token(char *address, char *seperator);
 char **tokenize(char *address);
-=======
+
 /* toem_vars.c */
 int is_chain(info_t *, char *, size_t *);
 void check_chain(info_t *, char *, size_t *, size_t, size_t);
 int replace_alias(info_t *);
 int replace_vars(info_t *);
 int replace_string(char **, char *);
->>>>>>> 0ddf2a30df90e4360a6297d8b9646605b2efea3a
+
 
 #endif
